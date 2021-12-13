@@ -1,0 +1,1251 @@
+{
+	"info": {
+		"_postman_id": "b18161b9-7700-4ab1-97eb-83c3844169b7",
+		"name": "project-test-collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Object1",
+			"item": [
+				{
+					"name": "Post object1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.getAnObject1ExistsBooleanPromise(pm, \"object1\")\r",
+									"    .then((result) =>\r",
+									"        pm.test(\"В списке присутствует объект под названием 'object1'\", function () {\r",
+									"            pm.expect(result).to.eql(true);\r",
+									"        })\r",
+									"    )\r",
+									"    .then(() => helper.deleteAnObject(pm, \"/object1\", \"object1\", \"1\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"object1\", \"1\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"@type\": \"object1\",\r\n    \"id\": \"object1\",\r\n    \"name\": \"object1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{request_url}}/object1",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get list of objects1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Тело ответа является списком из объектов1\", function () {\r",
+									"    let i = helper.selfRandom(0, jsonData.length - 1);\r",
+									"    if (jsonData[i].hasOwnProperty(\"type\") && (jsonData[i].type === \"type\")) {\r",
+									"        pm.expect(true).to.eql(true);\r",
+									"    }\r",
+									"    else {\r",
+									"        console.log(\"Тело ответа не является списком из объектов1\");\r",
+									"        pm.expect(true).to.not.eql(true);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"helper.deleteAnObject(pm, \"/object1/\", \"object1_id\", \"123\")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject1Promise(pm, \"/object1\", \"type\", \"123\", \"name\", \"info\", \"type\", \"parentId\", null)\r",
+									"    .then(() => pm.collectionVariables.set(\"object1_id\", \"123\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object1",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an object1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject1Promise(pm, \"/object1\", \"type\", \"123\", \"name\", \"info\", \"type\", \"parentId\", null)\r",
+									"    .then(() => helper.getObjectExistsBooleanPromise(pm, \"123\"))\r",
+									"    .then((result) => {\r",
+									"        result ? pm.collectionVariables.set(\"object1_id\", \"123\") : pm.collectionVariables.set(\"object1_id\", null)\r",
+									"    })\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.getObjectExistsBooleanPromise(pm, \"object1_id\")\r",
+									"    .then((result) =>\r",
+									"        pm.test(\"Было произведено удаление объекта под названием 'object1_id'\", function () {\r",
+									"            pm.expect(result).to.eql(false);\r",
+									"            pm.expect(pm.collectionVariables.get(\"object1_id\")).to.eql(\"123\");\r",
+									"        })\r",
+									"    )\r",
+									"    .then(() => pm.collectionVariables.set(\"object1_id\", null)) \r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object1/{{object1_id}}",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object1",
+								"{{object1_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one object1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject1Promise(pm, \"/object1\", \"type\", \"123\", \"name\", \"info\", \"type\", \"parentId\", null)\r",
+									"    .then(() => pm.collectionVariables.set(\"object1_id\", \"123\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Тело ответа является объектом под названием 'object1'\", function () {\r",
+									"    if (jsonData.name === \"name\") {\r",
+									"        pm.expect(true).to.eql(true);\r",
+									"    }\r",
+									"    else {\r",
+									"        console.log(\"Тело ответа не является объектом под названием 'object1\");\r",
+									"        pm.expect(true).to.not.eql(true);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"helper.deleteAnObject(pm, \"/object1/\", \"object1_id\", \"123\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object1/{{object1_id}}",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object1",
+								"{{object1_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Object2",
+			"item": [
+				{
+					"name": "Get all object2 count",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject2Promise(pm, \"/object2\", \"type\", \"1234\", \"name\", \"info\", \"type\", \"parentId\", null)\r",
+									"    .then(()=> pm.collectionVariables.set(\"object2_id\", \"1234\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Тело ответа является числом из количества 'object2'\", function () {\r",
+									"    if (typeof jsonData === 'number') {\r",
+									"        pm.expect(true).to.eql(true);\r",
+									"    }\r",
+									"    else {\r",
+									"        console.log(\"Тело ответа не является числом из количества 'object2'\");\r",
+									"        pm.expect(true).to.not.eql(true);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"helper.deleteAnObject(pm, \"/object2/\", \"object2_id\", \"1234\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object2/count",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object2",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post all objects2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"object2_id\", \"1234\");\r",
+									"pm.collectionVariables.set(\"object2Extra_id\", \"1234\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"Promise.all([helper.getObjectExistsBooleanPromise(pm, \"object2_id\"), helper.getObjectExistsBooleanPromise(pm, \"object2Extra_id\")])\r",
+									"    .then((results) => \r",
+									"        pm.test(\"В списке присутствуют добавленные объекты\", function () {\r",
+									"                pm.expect(results[0]&&results[1]).to.eql(true);\r",
+									"            })\r",
+									"        )\r",
+									"    .then(() => helper.deleteAnObject(pm, \"/object2/\", \"object2_id\", \"1234\"))\r",
+									"    .then(() => helper.deleteAnObject(pm, \"/object2/\", \"object2Extra_id\", \"1234\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"object2\": [\r\n        {\r\n            \"@type\": \"object1\",\r\n            \"id\": \"object1\",\r\n            \"name\": \"object1\"\r\n        },\r\n        {\r\n            \"@type\": \"object1\",\r\n            \"id\": \"object1\",\r\n            \"name\": \"object1\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{request_url}}/object2/all",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object2",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get measurement-unit of object2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject2Promise(pm, \"/object2\", \"type\", \"1234\", \"name\", \"info\", \"type\", \"parentId\", null)\r",
+									"    .then(() => helper.getListOfObjectsPromise(pm, \"/object2\"))\r",
+									"    .then((result) => {\r",
+									"        let object = result.find(label => label.name === \"object2\");\r",
+									"        pm.collectionVariables.set(\"object2_id\", object.id);\r",
+									"        pm.collectionVariables.set(\"object2_tag\", object.tag);\r",
+									"    })\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"В теле ответа присутствует единица измерения под названием 'X'\", function() {\r",
+									"    if (responseBody === '\"X\"') {\r",
+									"        pm.expect(true).to.eql(true); \r",
+									"    }\r",
+									"    else {   \r",
+									"        pm.expect(true).to.not.eql(true);        \r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"helper.deleteAnObject(pm, \"/object2/\", \"object2_id\", \"1234\", \"object2_tag\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object2/{{object2_id}}/measurement-unit",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object2",
+								"{{object2_id}}",
+								"measurement-unit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Object3",
+			"item": [
+				{
+					"name": "Get object3 exists",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject3Promise(pm, \"/object3\", \"type\", \"1234\", \"name\", \"info\", \"type\", \"parentId\", null)\r",
+									"    .then(() => pm.collectionVariables.set(\"object3_id\", \"1234\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Добавленный объект 'object3' существует\", function () {\r",
+									"        pm.expect(jsonData).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"helper.deleteAnObject(pm, \"/object3/\", \"object3_id\", \"1234\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object3/{{object3_id}}/object-exists",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object3",
+								"{{object3_id}}",
+								"object-exists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post geography location of object3",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject3Promise(pm, \"/object3\", \"type\", \"1234\", \"name\", \"info\", \"type\", \"parentId\", null)\r",
+									"    .then(() => pm.collectionVariables.set(\"object3_id\", \"1234\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const interval = setTimeout(() => { }, 3000);\r",
+									"\r",
+									"helper.getObjectByItsIdPromise(pm, \"1234\")\r",
+									"    .then((result) =>\r",
+									"        pm.test(\"У object3 'name' присутствуют добавленные широта и долгота\", function () {          \r",
+									"                pm.expect(result.longitude).to.eql(38.93972222222222);\r",
+									"                pm.expect(result.latitude).to.eql(71.01);\r",
+									"        })\r",
+									"    )\r",
+									"    .then(() => helper.deleteAnObject(pm, \"/object3/\", \"object3_id\", \"1234\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object3/{{object3_id}}/save-geography-location?longitude=38.93972222222222&latitude=71.01",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object3",
+								"{{object3_id}}",
+								"save-geography-location"
+							],
+							"query": [
+								{
+									"key": "longitude",
+									"value": "38.93972222222222"
+								},
+								{
+									"key": "latitude",
+									"value": "71.01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get named objects3",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.reloadPromise(pm)\r",
+									"    .then(() => helper.postAnObject3Promise(pm, \"/object3\", \"type\", \"1234\", \"name\", \"info\", \"type\", \"parentId\", null))\r",
+									"    .then(() => pm.collectionVariables.set(\"object3_id\", \"1234\"))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"В теле ответа присутствует объект 'name' у которого есть имя\", function () {\r",
+									"    const jsonData = JSON.parse(responseBody);\r",
+									"    function findElement(jsonData) {\r",
+									"        const JSONLENGTH = jsonData.length;\r",
+									"        let foundObj = (function () {\r",
+									"            for (let i = 0; i < JSONLENGTH; i++) {\r",
+									"                let arr = Object.values(jsonData[i]);\r",
+									"                let object = arr.find(item => {\r",
+									"                    if (\r",
+									"                        typeof item === 'object'\r",
+									"                        && item !== null\r",
+									"                        && \"name\" in item\r",
+									"                        && item.name === \"name\"\r",
+									"                    ) return item\r",
+									"                });\r",
+									"                if (object) return object;\r",
+									"            }\r",
+									"        })();\r",
+									"        pm.expect(foundObj.name).to.eql(\"name\");\r",
+									"    }\r",
+									"    findElement(jsonData);\r",
+									"});\r",
+									"\r",
+									"helper.deleteAnObject(pm, \"/object3/\", \"object3_id\", \"1234\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/objects3/named-objects",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"objects3",
+								"named-objects"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Object4",
+			"item": [
+				{
+					"name": "Post object4",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.getListOfObjectsPromise(pm, \"/object4\")\r",
+									"    .then((result) => {\r",
+									"        let additionalObject4 = {\r",
+									"            \"object4\": null,\r",
+									"            \"params\": [\r",
+									"                {\r",
+									"                    \"name\": \"name\",\r",
+									"                    \"id\": \"1\",\r",
+									"                }\r",
+									"            ],\r",
+									"            \"expression\": \"express\",\r",
+									"            \"tag\": \"1234\",\r",
+									"\r",
+									"        }; \r",
+									"        let bodyOfAllObjects = result;\r",
+									"        bodyOfAllObjects.push(additionalObject4);\r",
+									"        pm.collectionVariables.set(\"bodyOfAllObjects\", JSON.stringify(bodyOfAllObjects))\r",
+									"    }\r",
+									"    )\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.getAndSetVariablePromise(pm, \"/object4\", \"expression\", \"express\", \"object4_id\", \"id\")\r",
+									"    .then(() => helper.getListOfObjectsPromise(pm, \"/object4\"))\r",
+									"    .then((result) =>\r",
+									"        pm.test(\"В списке отправленных объектов присутствует объект 'object4'\", function () {\r",
+									"            let object = result.find(label => label.expression === \"object4\");\r",
+									"            pm.expect(object.expression).to.eql(\"object4\");\r",
+									"        })\r",
+									"    )\r",
+									"    .then(() => helper.deleteAnObject(pm, \"/object4/\", \"object4_id\", pm.collectionVariables.get(\"object4_id\")))\r",
+									"    .then(() => pm.collectionVariables.set(\"bodyOfAllObjects\", null))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{bodyOfAllObjects}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{request_url}}/object4/set-all",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object4",
+								"set-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an object4",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.postAnObject4Promise(pm, \"/object4\", \"name\")\r",
+									"    .then(() => helper.getAndSetVariablePromise(pm, \"/object4\", \"description\", \"name\", \"object4_id\", \"id\") )\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const interval = setTimeout(() => { }, 30000);\r",
+									"\r",
+									"helper.getListOfObjectsPromise(pm, \"/object4\")\r",
+									"    .then((result) =>\r",
+									"        pm.test(\"Было произведено удаление объекта 'object4'\", function () {\r",
+									"                let object = result.find(label => label.description === \"object4\");\r",
+									"                pm.expect(object).to.eql(undefined);\r",
+									"                pm.expect(pm.collectionVariables.get(\"object4_id\")).to.not.eql(null);\r",
+									"        })\r",
+									"    )\r",
+									"    .then(() => pm.collectionVariables.set(\"object4_id\", null))\r",
+									"    .then(() => clearTimeout(interval))\r",
+									"    .catch(err => {\r",
+									"        console.log(`Error: ${err}`);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/object4/{{object4_id}}",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"object4",
+								"{{object4_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Objects",
+			"item": [
+				{
+					"name": "Get objects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код - 200\", function () {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test(\"Тело ответа является списком объектов\", function() {  \r",
+									"    if (jsonData.hasOwnProperty(\"1\") && jsonData.hasOwnProperty(\"2\") && jsonData.hasOwnProperty(\"3\") && jsonData.hasOwnProperty(\"4\") && jsonData.hasOwnProperty(\"5\") && jsonData.hasOwnProperty(\"6\")&& jsonData.hasOwnProperty(\"7\")) {\r",
+									"        pm.expect(true).to.eql(true); \r",
+									"    }\r",
+									"    else {  \r",
+									"        console.log(\"Тело ответа не является списком объектов\");\r",
+									"        pm.expect(true).to.not.eql(true);        \r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{request_url}}/objects/all",
+							"host": [
+								"{{request_url}}"
+							],
+							"path": [
+								"objects",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "123Test",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "User",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"/**",
+					" * Хелперы",
+					" */",
+					"helper = {",
+					"    /**",
+					"     * @return произвольное число в интервале, включая число min и max",
+					"     */",
+					"    selfRandom: function (min, max) {",
+					"        min = Math.ceil(min);",
+					"        max = Math.floor(max);",
+					"        return Math.floor(Math.random() * (max - min + 1)) + min;",
+					"    },",
+					"",
+					"    /**",
+					"        * Создание dump объекта 1",
+					"        */",
+					"    postAnObject1Promise: function (pm, urlPart, objType_, objID, objName, objDesc, objType, objParent, objParentID) {",
+					"        return new Promise(function (resolve, reject) {",
+					"            function createUniqueLine() {",
+					"                var bodyToSend = {",
+					"                    \"@type\": objType_,",
+					"                    \"id\": objID,",
+					"                    \"name\": objName,",
+					"                    \"description\": objDesc,",
+					"                    \"type\": objType",
+					"                };",
+					"                bodyToSend[objParent] = objParentID; //создание уникального ключа со значением",
+					"                return bodyToSend; //уникальный ключ со значением + тело",
+					"            }",
+					"            bodyToSendResult = createUniqueLine();",
+					"            pm.sendRequest({",
+					"                url: pm.collectionVariables.get(\"request_url\") + urlPart,",
+					"                method: 'POST',",
+					"                header: {",
+					"                    \"Content-Type\": \"application/json\",",
+					"                },",
+					"                body: {",
+					"                    mode: 'raw',",
+					"                    raw: bodyToSendResult",
+					"                }",
+					"            }, (err, res) => {",
+					"                if (res.code != 200 && res.code != 201) {",
+					"                    console.log(`Error: Объект ${objID} не был создан`);",
+					"                    reject();",
+					"                } else {",
+					"                    console.log(`Error: Объект ${objID} был успешно создан`);",
+					"                    resolve();",
+					"                }",
+					"            }",
+					"            );",
+					"        });",
+					"    },",
+					"",
+					"",
+					"",
+					"       /**",
+					"        * Создание dump объекта 2",
+					"        */",
+					"    postAnObject2Promise: function (pm, urlPart, objID, objName, objDesc, objType) {",
+					"        return new Promise(function (resolve, reject) {",
+					"            pm.sendRequest({",
+					"                url: pm.collectionVariables.get(\"request_url\") + urlPart,",
+					"                method: 'POST',",
+					"                header: {",
+					"                    \"Content-Type\": \"application/json\",",
+					"                },",
+					"                body: {",
+					"                    mode: 'raw',",
+					"                    raw: {                                  ",
+					"                        \"id\": objID,",
+					"                        \"name\": objName,",
+					"                        \"description\": objDesc,",
+					"                        \"type\": objType,",
+					"                    }",
+					"                }",
+					"            }, (err, res) => {",
+					"                if (res.code != 200 && res.code != 201) {",
+					"                    console.log(`Error: Объект ${objID} не был создан`);",
+					"                    reject();",
+					"                } else {",
+					"                    console.log(`Error: Объект ${objID} был успешно создан`);",
+					"                    resolve();",
+					"                }",
+					"            }",
+					"            );",
+					"        });",
+					"    },",
+					"",
+					"",
+					"           /**",
+					"        * Создание dump объекта 3",
+					"        */",
+					"    postAnObject3Promise: function (pm, urlPart, paramName, paramTag, expression, tag, temp = 0) {",
+					"        return new Promise(function (resolve, reject) {",
+					"            ",
+					"            (temp !== 0)? value =  tep: value = null;",
+					"            pm.sendRequest({",
+					"                url: pm.collectionVariables.get(\"request_url\") + urlPart,",
+					"                method: 'POST',",
+					"                header: {",
+					"                    \"Content-Type\": \"application/json\",",
+					"                },",
+					"                body: {",
+					"                    mode: 'raw',",
+					"                    raw: {",
+					"                        \"temp\": value,",
+					"                        \"params\": [",
+					"                            {",
+					"                                \"name\": paramName,",
+					"                                \"tag\": paramTag",
+					"                            }",
+					"                        ],",
+					"                        \"expression\": expression,",
+					"                        \"tag\": tag, ",
+					"                        }",
+					"                    }",
+					"            }, (err, res) => {",
+					"                if (res.code != 200 && res.code != 201) {",
+					"                    console.log(`Error: Объект ${objID} не был создан`);",
+					"                    reject();",
+					"                } else {",
+					"                    console.log(`Error: Объект ${objID} был успешно создан`);",
+					"                    resolve();",
+					"                }",
+					"            }",
+					"            );",
+					"        });",
+					"    },",
+					"",
+					"",
+					"",
+					"    /**",
+					"        * @return список объектов",
+					"        */",
+					"    getListOfObjectsPromise: function (pm, urlPart) {",
+					"        return new Promise(function (resolve, reject) {",
+					"            pm.sendRequest({",
+					"                url: pm.collectionVariables.get(\"request_url\") + urlPart,",
+					"                method: 'GET'",
+					"            }, (err, res) => {",
+					"                const jsonData = res.json();",
+					"                    if (res.code != 200 && res.code != 201) {",
+					"                        console.log(\"Cписок объектов не был получен\");",
+					"                        reject(`${jsonData.status} ${jsonData.error}`);",
+					"                    } else {",
+					"                        console.log(\"Был получен список объектов\");",
+					"                        resolve(jsonData);",
+					"                }",
+					"            })",
+					"        })",
+					"    },",
+					"    ",
+					"",
+					"     /**",
+					"        * Поиск объекта по значению ключа и установка значения другого ключа в переменную ",
+					"        */",
+					"    getAndSetVariablePromise: function (pm, urlPart, keyToFind, value, objVarName, keyToSet) {",
+					"        return new Promise(function (resolve, reject) {",
+					"            pm.sendRequest({",
+					"                url: pm.collectionVariables.get(\"request_url\") + urlPart,",
+					"                method: 'GET'",
+					"            }, (err, res) => {",
+					"                const jsonData = res.json();",
+					"                    if (res.code != 200 && res.code != 201 && typeof jsonData.find == 'function') {",
+					"                        console.log(\"Значение для переменной не было найдено и установлено\");",
+					"                        reject(`${jsonData.status} ${jsonData.error}`);",
+					"                    } else {  ",
+					"                            let object = jsonData.find(label => label[keyToFind] === value);",
+					"                            if (object !== undefined) {",
+					"                                pm.collectionVariables.set(objVarName, object[keyToSet]);",
+					"                                console.log(\"Значение для переменной было найдено и установлено\");",
+					"                            } else {",
+					"                                pm.collectionVariables.set(objVarName, null);",
+					"                                console.log(\"Запрашиваемый объект отсутствует. Значение для переменной не было установлено\");",
+					"                            }                         ",
+					"                        resolve();",
+					"                }",
+					"            })",
+					"        })",
+					"    },",
+					"",
+					"     /**",
+					"        * Поиск объекта по значению ключа и установка значения id параметра найденного объекта в переменную ",
+					"        */",
+					"    getAndSetParameterIdPromise: function (pm, urlPart, keyToFind, value, objVarName) {",
+					"        return new Promise(function (resolve, reject) {",
+					"            pm.sendRequest({",
+					"                url: pm.collectionVariables.get(\"request_url\") + urlPart,",
+					"                method: 'GET'",
+					"            }, (err, res) => {",
+					"                const jsonData = res.json();",
+					"                    if (res.code != 200 && res.code != 201 && typeof jsonData.find == 'function') {",
+					"                        console.log(\"Идентификатор параметра не был найден и установлен\");",
+					"                        reject(`${jsonData.status} ${jsonData.error}`);",
+					"                    } else {",
+					"                            let object = jsonData.find(label => label[keyToFind] === value);",
+					"                                if (object !== undefined) {",
+					"                                    let paramId = object.params[0].id;",
+					"                                    pm.collectionVariables.set(objVarName, paramId);",
+					"                                    console.log(\"Идентификатор параметра был найден и установлен\");",
+					"                                } else {",
+					"                                    pm.collectionVariables.set(objVarName, null);",
+					"                                    console.log(\"Запрашиваемый объект отсутствует. Идентификатор параметра не был установлен\");",
+					"                                } ",
+					"                        resolve();",
+					"                }",
+					"            })",
+					"        })",
+					"    },",
+					"",
+					"",
+					"    /**",
+					"        * Удаление dump объекта",
+					"        */",
+					"        deleteAnObject: function (pm, urlPart, objVarName, objID, ObjVarName_ = 0) {",
+					"            const { Url } = require('postman-collection');",
+					"            let url = new Url(pm.collectionVariables.get(\"request_url\") + urlPart + pm.collectionVariables.get(objVarName));",
+					"            pm.sendRequest({",
+					"                url: url,",
+					"                method: 'DELETE'",
+					"            }, function (err, res) {",
+					"                urlJsonPath = url.toJSON().path;",
+					"                if (res.code != 200 && res.code != 201) { ",
+					"                        console.log(`Error: Объект ${objID} не был удален`);",
+					"                } else {",
+					"                    if (urlJsonPath[urlJsonPath.length-1] != objID ) {",
+					"                        console.log(`Error: Объект ${objID} не был удален`);",
+					"                    } else {",
+					"                        console.log(`Объект ${objID} был успешно удален`);",
+					"                    }",
+					"                    pm.collectionVariables.set(objVarName, null);",
+					"                    (ObjVarName_ !== 0)? pm.collectionVariables.set(ObjVarName_, null): undefined;",
+					"                }",
+					"            })",
+					"        },",
+					"",
+					"",
+					"    /**",
+					"            * @return boolean существования объекта",
+					"            */",
+					"        getObjectExistsBooleanPromise: function (pm, ObjVarNameOrID) {",
+					"            return new Promise(function (resolve, reject) {",
+					"                urlPart = ObjVarNameOrID.slice(-3) !== \"_id\" ?  ObjVarNameOrID :   pm.collectionVariables.get(ObjVarNameOrID); //в параметр может быть передан или сам id или название переменной, содержащей этот id",
+					"                pm.sendRequest({",
+					"                    url: pm.collectionVariables.get(\"request_url\") + \"/objects/\" + urlPart + \"/object-exists\",",
+					"                    method: 'GET'",
+					"                }, (err, res) => {",
+					"                    const jsonData = res.json();",
+					"                        if (res.code != 200 && res.code != 201) {",
+					"                            console.log(\"Информация о существовании объекта не была получена\");",
+					"                            reject(`${jsonData.status} ${jsonData.error}`);",
+					"                        } else {",
+					"                            console.log(\"Была получена информация о существовании объекта\");",
+					"                            resolve(jsonData);",
+					"                    }",
+					"                })",
+					"            })",
+					"        },",
+					"",
+					"",
+					"",
+					"            /**",
+					"            * @return объект по его ID",
+					"            */",
+					"        getAnObjectByItsIdPromise: function (pm, objID) {",
+					"            return new Promise(function (resolve, reject) {",
+					"                pm.sendRequest({",
+					"                    url: pm.collectionVariables.get(\"request_url\") + \"/objects/\" + objID,",
+					"                    method: 'GET'",
+					"                }, (err, res) => {",
+					"                    const jsonData = res.json();",
+					"                        if (res.code != 200 && res.code != 201) {",
+					"                            console.log(\"Объект по запрашиваемому ID не был получен\");",
+					"                            reject(`${jsonData.status} ${jsonData.error}`);",
+					"                        } else {",
+					"                            console.log(\"Объект по запрашиваемому ID был успешно получен\");",
+					"                            resolve(jsonData);",
+					"                    }",
+					"                })",
+					"            })",
+					"        }",
+					"",
+					"};",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "request_url",
+			"value": "http://address"
+		},
+		{
+			"key": "object1_id",
+			"value": ""
+		},
+		{
+			"key": "object2_id",
+			"value": ""
+		},
+		{
+			"key": "object3_id",
+			"value": ""
+		},
+		{
+			"key": "object4_id",
+			"value": ""
+		},
+		{
+			"key": "object4_tag",
+			"value": ""
+		},
+		{
+			"key": "object4Extra_id",
+			"value": ""
+		},
+		{
+			"key": "object4Extra_tag",
+			"value": ""
+		},
+		{
+			"key": "object5_id",
+			"value": ""
+		},
+		{
+			"key": "object5_tag",
+			"value": ""
+		},
+		{
+			"key": "object6_id",
+			"value": ""
+		},
+		{
+			"key": "object7_id",
+			"value": ""
+		},
+		{
+			"key": "object8_id",
+			"value": ""
+		},
+		{
+			"key": "object9_id",
+			"value": ""
+		},
+		{
+			"key": "bodyOfAllObjects",
+			"value": ""
+		}
+	]
+}
